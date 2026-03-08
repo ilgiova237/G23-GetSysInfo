@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/pc/:pcName", "destination": "/api/pc/[pcName]" },
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]
 }
