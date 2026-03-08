@@ -32,21 +32,21 @@ export default async function handler(req) {
   const key = `specs:${pcName}`;
   const record = JSON.stringify({ pcName, content, date, updatedAt: new Date().toISOString() });
 
-  // Save the report
-  await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}`, {
+  // Save the report using Upstash REST pipeline
+  const pipeline = [
+    ["set", key, record],
+    ["sadd", "pc-index", pcName]
+  ];
+
+  const res = await fetch(`${REDIS_URL}/pipeline`, {
     method: 'POST',
     headers,
-    body: JSON.stringify([record]),
+    body: JSON.stringify(pipeline),
   });
 
-  // Add to the index set
-  await fetch(`${REDIS_URL}/sadd/pc-index`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify([pcName]),
-  });
+  const result = await res.json();
 
-  return new Response(JSON.stringify({ ok: true, pcName }), {
+  return new Response(JSON.stringify({ ok: true, pcName, redis: result }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
