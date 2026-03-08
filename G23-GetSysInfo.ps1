@@ -6,7 +6,7 @@
 #  - Esegui con: powershell -ExecutionPolicy Bypass -File Get-SystemSpecs.ps1
 # ================================================================
 
-$API_URL = "https://G23-GetSysInfo.vercel.app/api/upload"   # <-- aggiorna dopo il deploy
+$API_URL = "https://g23-getsysinfo.vercel.app/api/upload"   # <-- aggiorna dopo il deploy
 
 # ── helpers ──────────────────────────────────────────────────
 $lines = [System.Collections.Generic.List[string]]::new()
