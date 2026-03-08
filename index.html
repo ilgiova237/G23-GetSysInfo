@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PC Specs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:       #0d0d0d;
+    --surface:  #141414;
+    --border:   #2a2a2a;
+    --accent:   #00e5ff;
+    --accent2:  #7c3aed;
+    --text:     #e2e2e2;
+    --muted:    #555;
+    --green:    #22c55e;
+    --red:      #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+  }
+  header .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  header .logo span { color: var(--muted); }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* ── LIST VIEW ── */
+  #list-view h2 {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .pc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .pc-card:hover {
+    border-left-color: var(--accent2);
+    background: #1a1a1a;
+  }
+  .pc-card .pc-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .pc-card .pc-meta {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .pc-card .arrow {
+    color: var(--muted);
+    font-size: 1.2rem;
+    transition: color 0.15s;
+  }
+  .pc-card:hover .arrow { color: var(--accent); }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 60px;
+    line-height: 2;
+  }
+  .empty .hint {
+    color: var(--accent);
+    font-size: 0.75rem;
+    margin-top: 8px;
+  }
+
+  /* ── DETAIL VIEW ── */
+  #detail-view { display: none; }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 7px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .detail-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .detail-header h1 {
+    font-size: 1.4rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .detail-header .detail-date {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .report-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .report-box pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre;
+  }
+
+  /* colored lines */
+  .line-header  { color: var(--accent); font-weight: 700; }
+  .line-section { color: var(--accent2); font-weight: 600; }
+  .line-key     { color: #94a3b8; }
+  .line-value   { color: var(--text); }
+  .line-border  { color: var(--border); }
+
+  /* ── LOADING ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-msg {
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PC<span>/</span>SPECS</div>
+</header>
+
+<main>
+  <!-- LIST -->
+  <div id="list-view">
+    <h2>// Machines</h2>
+    <div id="pc-list"><p class="loading-msg"><span class="spinner"></span>Loading...</p></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div id="detail-view">
+    <button class="back-btn" onclick="showList()">← Back</button>
+    <div class="detail-header">
+      <h1 id="detail-name"></h1>
+      <span class="detail-date" id="detail-date"></span>
+    </div>
+    <div class="report-box">
+      <pre id="detail-content"></pre>
+    </div>
+  </div>
+</main>
+
+<script>
+const listView   = document.getElementById('list-view');
+const detailView = document.getElementById('detail-view');
+const pcList     = document.getElementById('pc-list');
+
+async function loadList() {
+  try {
+    const res  = await fetch('/api/list');
+    const data = await res.json();
+
+    if (!data.length) {
+      pcList.innerHTML = `
+        <div class="empty">
+          No machines found.<br>
+          <span class="hint">Run the PowerShell script on a PC to add it here.</span>
+        </div>`;
+      return;
+    }
+
+    pcList.innerHTML = data.map(pc => `
+      <div class="pc-card" onclick="loadDetail('${escHtml(pc.pcName)}')">
+        <div>
+          <div class="pc-name">${escHtml(pc.pcName)}</div>
+          <div class="pc-meta">Last update: ${formatDate(pc.updatedAt)}</div>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+    `).join('');
+  } catch (e) {
+    pcList.innerHTML = `<p class="loading-msg" style="color:var(--red)">Error loading list.</p>`;
+  }
+}
+
+async function loadDetail(pcName) {
+  detailView.style.display = 'block';
+  listView.style.display   = 'none';
+
+  document.getElementById('detail-name').textContent = pcName;
+  document.getElementById('detail-date').textContent = '';
+  document.getElementById('detail-content').innerHTML = '<span class="spinner"></span> Loading...';
+
+  try {
+    const res  = await fetch(`/api/pc/${encodeURIComponent(pcName)}`);
+    const data = await res.json();
+
+    document.getElementById('detail-date').textContent = `Updated: ${formatDate(data.updatedAt)}`;
+    document.getElementById('detail-content').innerHTML = colorize(data.content || '');
+  } catch (e) {
+    document.getElementById('detail-content').textContent = 'Error loading report.';
+  }
+}
+
+function showList() {
+  detailView.style.display = 'none';
+  listView.style.display   = 'block';
+}
+
+function colorize(text) {
+  return text.split('\n').map(line => {
+    const e = escHtml(line);
+    if (/^[╔╠╚║]/.test(line))           return `<span class="line-header">${e}</span>`;
+    if (/^={3,}/.test(line.trim()))      return `<span class="line-border">${e}</span>`;
+    if (/^\s{2}[A-Z\s]{3,}\s*$/.test(line)) return `<span class="line-section">${e}</span>`;
+    if (/^\s+\w[\w\s()]+\s*:/.test(line)) {
+      return e.replace(/^(\s*)([\w\s()#_\-]+?)(\s*:\s*)(.*)$/,
+        (_, sp, k, sep, v) =>
+          `${sp}<span class="line-key">${k}${sep}</span><span class="line-value">${v}</span>`
+      );
+    }
+    return e;
+  }).join('\n');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' });
+  } catch { return iso; }
+}
+
+loadList();
+</script>
+</body>
+</html>
