@@ -639,8 +639,8 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_KEY) {
+  const GROQ_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_KEY) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), { status: 500 });
   }
 
@@ -656,36 +656,30 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Missing specs' }), { status: 400 });
   }
 
-  const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{ text: SYSTEM_PROMPT }],
-        },
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: `Here are the system specs for this PC:\n\n${specs}` }],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 8192,
-          temperature: 0.7,
-        },
-      }),
-    }
-  );
+  const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${GROQ_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 8192,
+      temperature: 0.7,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: `Here are the system specs for this PC:\n\n${specs}` },
+      ],
+    }),
+  });
 
-  const data = await geminiRes.json();
+  const data = await groqRes.json();
 
-  if (!geminiRes.ok) {
+  if (!groqRes.ok) {
     return new Response(JSON.stringify({ error: data }), { status: 500 });
   }
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const text = data.choices?.[0]?.message?.content || '';
 
   return new Response(JSON.stringify({ result: text }), {
     status: 200,
