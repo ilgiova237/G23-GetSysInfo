@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+export const config = { maxDuration: 60 };
 
 const SYSTEM_PROMPT = `You are PCOptimizer, an expert AI system specializing in Windows PC optimization, debloating, and performance tuning. Your goal is to provide highly personalized, actionable advice based on the exact hardware and software configuration of the user's machine.
 
