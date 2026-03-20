@@ -1,4 +1,4 @@
-export const config = { maxDuration: 60 };
+export const config = { runtime: 'edge' };
 
 const SYSTEM_PROMPT = `You are PCOptimizer, an expert AI system specializing in Windows PC optimization, debloating, and performance tuning. Your goal is to provide highly personalized, actionable advice based on the exact hardware and software configuration of the user's machine.
 
@@ -639,8 +639,8 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
-  if (!OPENROUTER_KEY) {
+  const GROQ_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_KEY) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), { status: 500 });
   }
 
@@ -656,21 +656,22 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Missing specs' }), { status: 400 });
   }
 
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${OPENROUTER_KEY}`,
+      'Authorization': `Bearer ${GROQ_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://g23-getsysinfo.vercel.app',
-      'X-Title': 'G23-GetSysInfo',
     },
     body: JSON.stringify({
-      model: 'moonshotai/kimi-k2',
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 8192,
       temperature: 0.7,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: `Here are the system specs for this PC:\n\n${specs}` },
+        {
+          role: 'user',
+          content: `Here are the system specs for this PC:\n\n${specs}\n\nIMPORTANT: You MUST follow the response format exactly as specified in your instructions. For EVERY section, provide COMPLETE and DETAILED information including ALL PowerShell commands, ALL specific steps, and ALL explanations. Do NOT summarize or shorten any section. Each section must be thorough and complete. Include every single command from the prompt for each relevant section.`
+        },
       ],
     }),
   });
