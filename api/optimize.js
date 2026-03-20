@@ -639,8 +639,8 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const GROQ_KEY = process.env.GROQ_API_KEY;
-  if (!GROQ_KEY) {
+  const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+  if (!OPENROUTER_KEY) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), { status: 500 });
   }
 
@@ -656,14 +656,16 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Missing specs' }), { status: 400 });
   }
 
-  const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
+      'Authorization': `Bearer ${OPENROUTER_KEY}`,
       'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://g23-getsysinfo.vercel.app',
+      'X-Title': 'G23-GetSysInfo',
     },
     body: JSON.stringify({
-      model: 'deepseek-r1-distill-llama-70b',
+      model: 'moonshotai/kimi-k2',
       max_tokens: 8192,
       temperature: 0.7,
       messages: [
@@ -673,9 +675,9 @@ export default async function handler(req) {
     }),
   });
 
-  const data = await groqRes.json();
+  const data = await res.json();
 
-  if (!groqRes.ok) {
+  if (!res.ok) {
     return new Response(JSON.stringify({ error: data }), { status: 500 });
   }
 
